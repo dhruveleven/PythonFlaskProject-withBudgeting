@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='css/main.css')}}"
+    />
+    <title>Expense Tracker</title>
+  </head>
+  <body>
+    <h1 style="font-family: monospace">Expense Tracker</h1>
+    <a href="{{ url_for('index') }}"
+      ><button id="expense-buttons" class="expense-buttons">Home</button></a
+    >
+    <a href="{{ url_for('todo') }}"
+      ><button id="expense-buttons" class="expense-buttons">
+        ToDo List
+      </button></a
+    >
+    {% if expenses|length < 1 %}
+    <h4>NO EXPENSES TO TRACK</h4>
+    {% else %}
+    <table>
+      <tr>
+        <th>AMOUNT</th>
+        <th>DATE</th>
+        <th>CATEGORY</th>
+        <th>DESCRIPTION</th>
+        <th>ACTION</th>
+      </tr>
+      {% for expense in expenses %}
+      <tr>
+        <td>{{ expense.amount }}</td>
+        <td>{{ expense.date }}</td>
+        <td>{{ expense.category }}</td>
+        <td>{{ expense.description }}</td>
+        <td>
+          <a href="/delete_exp/{{ expense.id }}">Delete</a>
+          <br />
+          <a href="/update_expenses/{{ expense.id }}">Update</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% endif %}
+
+    <div>
+      <form action="/expenses" method="POST">
+        <input
+          type="number"
+          name="amount"
+          id="expense-amount"
+          placeholder="Enter amount..."
+        />
+        <select name="category" id="expense-category">
+          <option value="" disabled selected>Choose Category</option>
+          <option value="Self">Self</option>
+          <option value="House">House</option>
+          <option value="Office">Office</option>
+        </select>
+        <input
+          type="text"
+          name="description"
+          id="expense-amount"
+          placeholder="Enter expense description..."
+        />
+        <input type="submit" value="Add Expense" />
+      </form>
+      <form action="/expenses" method="GET">
+        <label for="category" class="filter-text">Filter by category:</label>
+        <select name="category" id="category" class="filter-css">
+          <option value="">All</option>
+          <option value="Self">Self</option>
+          <option value="House">House</option>
+          <option value="Office">Office</option>
+        </select>
+        <button type="submit" class="filter-css" id="centered_buttons">
+          Apply Filter
+        </button>
+      </form>
+      <table>
+        <tr>
+          <th>Category</th>
+          <th>Total Expenses</th>
+          <th>Remaining Budget</th>
+          <th>Budget Usage</th>
+        </tr>
+        {% for category, budget_data in category_budget_usage.items() %}
+        <tr>
+          <td>{{ category }}</td>
+          <td>{{ budget_data.total_expenses }}</td>
+          <td>{{ budget_data.remaining_budget }}</td>
+          <td>{{ budget_data.budget_percentage }}%</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </body>
+</html>

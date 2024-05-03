@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static',filename='css/main.css')}}"
+    />
+    <title>ToDo List</title>
+  </head>
+  <body>
+    <h1 style="font-family: monospace">ToDo List</h1>
+    <a href="{{ url_for('index') }}"
+      ><button id="todo-buttons" class="todo-buttons">Home</button></a
+    >
+    <a href="{{ url_for('expenses') }}"
+      ><button id="todo-buttons" class="todo-buttons">
+        Expense Tracker
+      </button></a
+    >
+    {% if tasks|length < 1 %}
+    <h4>Sit back and relax! You have nothing lined-up!</h4>
+    {% else %}
+    <table>
+      <tr>
+        <th>Urgency</th>
+        <th>Task</th>
+        <th>Added</th>
+        <th>Actions</th>
+      </tr>
+      {% for task in tasks %}
+      <tr>
+        <td>{{ task.type }}</td>
+        <td>{{ task.content }}</td>
+        <td>{{ task.date_created }}</td>
+        <td>
+          <a href="/delete_todo/{{task.id}}">Delete</a>
+          <br />
+          <a href="/update_todo/{{task.id}}">Update</a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+
+    {% endif %}
+    <div>
+      <form action="/todo" method="POST">
+        <input type="text" name="type" id="type" placeholder="Urgency" />
+        <input
+          type="text"
+          name="content"
+          id="content"
+          placeholder="Enter your task here..."
+        />
+        <input type="submit" value="Add Task" />
+      </form>
+    </div>
+    <div>
+      <form action="/todo" method="GET">
+        <button
+          type="submit"
+          name="sort"
+          value="priority"
+          class="centered_buttons"
+          id="centered_buttons"
+        >
+          Sort by Priority
+        </button>
+        <button
+          type="submit"
+          name="sort"
+          value="date"
+          class="centered_buttons"
+          id="centered_buttons"
+        >
+          Sort by Date
+        </button>
+      </form>
+    </div>
+  </body>
+</html>
